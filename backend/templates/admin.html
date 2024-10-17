@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin - Digital Voting System</title>
     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <link
       rel="stylesheet"
       href="{{ url_for('static', filename='styles.css') }}"
     />
@@ -12,20 +23,41 @@
   <body>
     <div class="container">
       <h1>Admin Panel</h1>
+
+      <div class="d-flex justify-content-end">
+        <form
+          action="{{ url_for('logout') }}"
+          method="get"
+          style="display: inline"
+        >
+          <button type="submit" class="logout-button">Logout</button>
+        </form>
+      </div>
       <!-- Register New Candidate -->
-      <section id="register-candidate">
+      <section id="register-candidate" class="col-md-3">
         <h2>Register a Candidate</h2>
         <input type="text" id="candidateName" placeholder="Candidate Name" />
-        <button onclick="registerCandidate()">Register Candidate</button>
+        <button id="registerbtn" onclick="registerCandidate()">
+          Register Candidate
+        </button>
         <p id="registerResult"></p>
       </section>
 
       <!-- View All Candidates and Results -->
       <section id="candidates">
         <h2>All Candidates and Results</h2>
-        <button onclick="getCandidates()">Refresh List</button>
+        {# <button onclick="getCandidates()">Refresh List</button> #} {#
         <ul id="candidatesList"></ul>
+        #}
+        <table class="table">
+          <thead>
+            <th>Candidate Name</th>
+            <th>Total Votes / Action</th>
+          </thead>
+          <tbody id="candidatesList"></tbody>
+        </table>
       </section>
+      <div id="controlPanel"></div>
     </div>
 
     <script src="{{ url_for('static', filename='app.js') }}"></script>
