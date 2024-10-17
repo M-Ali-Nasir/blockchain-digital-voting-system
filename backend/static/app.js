@@ -41,40 +41,55 @@ function getCandidates() {
     .then(response => response.json())
     .then(data => {
         isAdmin = data.is_admin;
-        console.log(isAdmin);
         let candidateCount = data.candidateCount;
         let candidatesList = document.getElementById("candidatesList");
         candidatesList.innerHTML = '';  // Clear previous list
         let activeCadidateCount = 0;
+        let fetchPromises = [];
         for (let i = 1; i <= candidateCount; i++) {
-            fetch(`/candidate/${i}`)
+            let fetchPromise = fetch(`/candidate/${i}`)
             .then(response => response.json())
             .then(candidate => {
                 if (candidate.name && candidate.name !== ""){
-                    activeCadidateCount ++;
+                    activeCadidateCount += 1;
+                    
                 }
             });
+            fetchPromises.push(fetchPromise);
         }
-
-        if (isAdmin) {
-            let controlPanel = document.getElementById("controlPanel");
-            controlPanel.innerHTML = '';  // Clear previous controls
-
-            if (votingStarted && !votingEnded) {
-                controlPanel.innerHTML += `<button  onclick="stopVoting()" class="stop-button col-md-2">Stop Voting</button>`;
-            } else if (!votingStarted) {
-                controlPanel.innerHTML += `<button onclick="startVoting()" class="start-button col-md-2"${activeCadidateCount >2 ? `>Start Voting</button>` :`disabled>Start Voting</button><p>Please register minimum 2 candidates to start voting</p>`}`;
+        Promise.all(fetchPromises).then(() => {
+            
+           
+            if (isAdmin) {
+                let controlPanel = document.getElementById("controlPanel");
+                controlPanel.innerHTML = '';  
+    
+                if (votingStarted && !votingEnded) {
+                    controlPanel.innerHTML += `<button  onclick="stopVoting()" class="stop-button col-md-2">Stop Voting</button>`;
+                } else if (!votingStarted) {
+                    let active = false;
+                    
+                    if(activeCadidateCount > 1)
+                        active = true;
+                  
+                    controlPanel.innerHTML += `<button onclick="startVoting()" class="start-button col-md-2"${active ? `>Start Voting</button>` :`disabled>Start Voting</button><p>Please register minimum 2 candidates to start voting</p>`}`;
+                }
+            }else{
+                let controlPanel = document.getElementById("message");
+                controlPanel.innerHTML = '';  
+    
+                if (votingStarted && !votingEnded) {
+                    controlPanel.innerHTML += `<h3 class="text-success text-center">Votting is Started. You can vote now</h3>`;
+                } else if (!votingStarted) {
+                    controlPanel.innerHTML += `<h3 class="text-danger text-center">Voting is stopped.</h3>`;
+                }
             }
-        }else{
-            let controlPanel = document.getElementById("message");
-            controlPanel.innerHTML = '';  // Clear previous controls
 
-            if (votingStarted && !votingEnded) {
-                controlPanel.innerHTML += `<h3 class="text-success text-center">Votting is Started. You can vote now</h3>`;
-            } else if (!votingStarted) {
-                controlPanel.innerHTML += `<h3 class="text-danger text-center">Voting is stopped.</h3>`;
-            }
-        }
+
+
+
+        });
+        
 
         for (let i = 1; i <= candidateCount; i++) {
             fetch(`/candidate/${i}`)
