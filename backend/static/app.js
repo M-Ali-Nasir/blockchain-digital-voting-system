@@ -45,6 +45,16 @@ function getCandidates() {
         let candidateCount = data.candidateCount;
         let candidatesList = document.getElementById("candidatesList");
         candidatesList.innerHTML = '';  // Clear previous list
+        let activeCadidateCount = 0;
+        for (let i = 1; i <= candidateCount; i++) {
+            fetch(`/candidate/${i}`)
+            .then(response => response.json())
+            .then(candidate => {
+                if (candidate.name && candidate.name !== ""){
+                    activeCadidateCount ++;
+                }
+            });
+        }
 
         if (isAdmin) {
             let controlPanel = document.getElementById("controlPanel");
@@ -53,7 +63,7 @@ function getCandidates() {
             if (votingStarted && !votingEnded) {
                 controlPanel.innerHTML += `<button  onclick="stopVoting()" class="stop-button col-md-2">Stop Voting</button>`;
             } else if (!votingStarted) {
-                controlPanel.innerHTML += `<button onclick="startVoting()" class="start-button col-md-2">Start Voting</button>`;
+                controlPanel.innerHTML += `<button onclick="startVoting()" class="start-button col-md-2"${activeCadidateCount >2 ? `>Start Voting</button>` :`disabled>Start Voting</button><p>Please register minimum 2 candidates to start voting</p>`}`;
             }
         }else{
             let controlPanel = document.getElementById("message");
