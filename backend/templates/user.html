@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User - Digital Voting System</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>User Voting Page</h1>
+
+      <!-- View All Candidates for Voting -->
+      <section id="candidates">
+        <h2>Select a Candidate to Vote</h2>
+        <button onclick="getCandidates()">Refresh List</button>
+        <ul id="candidatesList"></ul>
+      </section>
+
+      <!-- Vote for a Candidate -->
+      <section id="vote">
+        <h2>Vote for a Candidate</h2>
+        <input type="text" id="candidateId" placeholder="Candidate ID" />
+        <input
+          type="hidden"
+          id="voterAddress"
+          placeholder="Your Address (from Ganache)"
+          hidden
+        />
+        <button onclick="vote()">Vote</button>
+        <p id="voteResult"></p>
+      </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
